@@ -24,46 +24,44 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/todos")
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 public class ToDoController {
-	
+
 	@Autowired
 	private ToDoRepository toDoRepository;
-	
-	
+
 	@PostMapping
 	public ToDo save(@RequestBody ToDo todo) {
 		return toDoRepository.save(todo);
 	}
 
-	
 	@GetMapping("{id}")
 	public ToDo getById(@PathVariable Long id) {
-		
+
 		return toDoRepository.findById(id)
-							 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		 
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
 	}
-	 
-	  @GetMapping
-	  public @ResponseBody List<ToDo> getList() {
-	      return toDoRepository.findAll(); 
-	  }
-	   
-	  @DeleteMapping("{id}")
-	  public void delete(@PathVariable Long id) {
-		  toDoRepository.deleteById(id);
-		  
-	  }
-	  
-	  @PatchMapping("{id}/done")
-	  public ToDo markAsDone(@PathVariable Long id) {
-		  return toDoRepository.findById(id).map(todo -> {
-			  todo.setDone(true);
-			  todo.setDoneDate(LocalDateTime.now());
-			  toDoRepository.save(todo);
-			  return todo;
-		  }).orElse(null);
-	  }
+
+	@GetMapping
+	public @ResponseBody List<ToDo> getList() {
+		return toDoRepository.findAll();
+	}
+
+	@DeleteMapping("{id}")
+	public void delete(@PathVariable Long id) {
+		toDoRepository.deleteById(id);
+
+	}
+
+	@PatchMapping("{id}/done")
+	public ToDo markAsDone(@PathVariable Long id) {
+		return toDoRepository.findById(id).map(todo -> {
+			todo.setDone(true);
+			todo.setDoneDate(LocalDateTime.now());
+			toDoRepository.save(todo);
+			return todo;
+		}).orElse(null);
+	}
 
 }
